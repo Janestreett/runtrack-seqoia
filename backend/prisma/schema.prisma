@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  passwordHash  String
+  weightKg      Float?
+  distanceUnit  String   @default("km")
+  paceUnit      String   @default("min_km")
+  theme         String   @default("light")
+  notifications Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  activities Activity[]
+  goals      Goal[]
+  records    PersonalRecord[]
+
+  @@map("users")
+}
+
+model Activity {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String
+  type           String   @default("run")
+  distanceKm     Float
+  durationSec    Int
+  avgPaceSec     Int?
+  avgSpeedKmh    Float?
+  calories       Int?
+  elevationGainM Float?
+  startedAt      DateTime
+  endedAt        DateTime
+  createdAt      DateTime @default(now())
+
+  gpsPoints GPSPoint[]
+
+  @@index([userId, startedAt])
+  @@map("activities")
+}
+
+model GPSPoint {
+  id         String   @id @default(uuid())
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  lat        Float
+  lng        Float
+  altitude   Float?
+  accuracy   Float?
+  timestamp  DateTime
+  sequence   Int
+
+  @@index([activityId, sequence])
+  @@map("gps_points")
+}
+
+model Goal {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String
+  targetValue Float
+  period      String
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime @default(now())
+
+  @@map("goals")
+}
+
+model PersonalRecord {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type       String
+  valueSec   Int?
+  valueKm    Float?
+  activityId String?
+  achievedAt DateTime @default(now())
+
+  @@unique([userId, type])
+  @@map("personal_records")
+}

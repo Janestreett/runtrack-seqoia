@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- RUNTRACK design tokens ---- */
+
+:root {
+  --color-bg: 247 247 245;       /* #F7F7F5 */
+  --color-surface: 255 255 255;  /* #FFFFFF */
+  --color-ink: 17 17 17;         /* #111111 */
+  --color-muted: 107 107 107;    /* #6B6B6B */
+  --color-muted2: 150 150 144;   /* #969690 */
+  --color-border: 229 229 225;   /* #E5E5E1 */
+  --color-accent: 31 92 86;      /* #1F5C56 */
+  --color-success: 92 138 102;   /* #5C8A66 */
+  --color-warning: 185 128 69;   /* #B98045 */
+  --color-danger: 177 86 86;     /* #B15656 */
+}
+
+.dark {
+  --color-bg: 16 17 16;          /* #101110 */
+  --color-surface: 23 24 23;     /* #171817 */
+  --color-ink: 244 244 241;      /* #F4F4F1 */
+  --color-muted: 153 154 150;    /* #999A96 */
+  --color-muted2: 122 123 119;   /* muted secondary, dark */
+  --color-border: 41 42 40;      /* #292A28 */
+  --color-accent: 94 158 146;    /* #5E9E92 */
+  --color-success: 122 173 132;
+  --color-warning: 201 152 99;
+  --color-danger: 201 120 120;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  @apply bg-bg text-ink antialiased;
+  font-family: "Inter", "Manrope", system-ui, sans-serif;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+* {
+  scrollbar-width: thin;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: rgb(var(--color-border));
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgb(var(--color-accent));
+  outline-offset: 2px;
+}
+
+/* ---- Landing hero motion (single orchestrated entrance) ---- */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-scale {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes bar-grow {
+  from { transform: scaleY(0); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-3%, 3%) scale(1.06); }
+}
+@keyframes draw-route {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-fade-up { animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-down { animation: fade-down 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-scale { animation: fade-scale 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-bar-grow { animation: bar-grow 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+.animate-drift { animation: drift 14s ease-in-out infinite; }
+.animate-drift-slow { animation: drift 20s ease-in-out infinite reverse; }
+.animate-draw-route { animation: draw-route 3.2s cubic-bezier(0.65, 0, 0.35, 1) 0.6s forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-down,
+  .animate-fade-scale,
+  .animate-bar-grow,
+  .animate-drift,
+  .animate-drift-slow,
+  .animate-draw-route {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
